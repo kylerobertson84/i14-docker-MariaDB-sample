@@ -1,0 +1,25 @@
+
+services:
+  mariadb:
+    volumes:
+      - ./mariadb_data:/var/lib/mysql
+      - ./mysql-dump:/docker-entrypoint-initdb.d
+    image: mariadb:latest
+    container_name: siem_db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: siem
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_USER: siem_user
+      MYSQL_PASSWORD: userpassword
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+
+    ports:
+      - "3308:3306"
+    networks:
+      - siem_network
+    command: --init-file /docker-entrypoint-initdb.d/init_db.sql
+
+networks:
+  siem_network:
